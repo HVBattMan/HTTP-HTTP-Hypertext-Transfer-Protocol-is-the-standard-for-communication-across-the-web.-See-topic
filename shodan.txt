@@ -1,0 +1,1436 @@
+Show API Key 
+Shodan 
+Developers 
+Book 
+View All... 
+
+
+Dashboard
+API Reference
+Integrations
+Pricing
+Contact Us
+ My Account 
+
+API Documentation 
+Requirements
+Introduction
+Clients
+REST API Documentation
+Streaming API Documentation
+Exploits API Documentation 
+Introduction
+REST API Documentation
+Appendix 
+Banner Specification
+Exploit Specification
+REST API Documentation
+The base URL for all of these methods is:
+https://api.shodan.io
+Note: All API methods are rate-limited to 1 request/ second. 
+Shodan Search Methods
+GET/shodan/host/{ip} 
+Host Information
+Returns all services that have been found on the given host IP.
+Request URL
+https://api.shodan.io/shodan/host/{ip}?key={YOUR_API_KEY}
+Parameters
+ip: [String] Host IP address 
+history (optional): [Boolean] True if all historical banners should be returned (default: False) 
+minify (optional): [Boolean] True to only return the list of ports and the general host information, no banners. (default: False) 
+Sample Response
+{
+ "region_code": null,
+ "ip": "41.21.249.170",
+ "area_code": null,
+ "country_name": "South Africa", "hostnames": [],
+ "postal_code": null,
+ "dma_code": null,
+ "country_code": "ZA",
+ "data": [
+  {
+   "product": "Siemens HiPath 3000 telnetd",
+   "os": null,
+   "timestamp": "2014-01-12T18:25:41.370550",
+   "isp": "Vodacom",
+   "asn": "AS36994",
+   "banner": "\r************************\n\r*  HiPath 3000 Telnet  *\n\r*  ------------------  *\n\r*                      *\n\r*  Adjust the Telnet   *\n\r*  window to the       *\n\r*  visible frame       *\n\r*                      *\n\r************************\n\r",
+   "hostnames": [],
+   "devicetype": "firewall",
+   "location": {
+    "city": null,
+    "region_code": null,
+    "area_code": null,
+    "longitude": 24.0,
+    "country_code3": "ZAF",
+    "country_name": "South Africa",
+    "postal_code": null,
+    "dma_code": null,
+    "country_code": "ZA",
+    "latitude": -29.0
+   },
+   "ip": "41.21.249.170",
+   "domains": [],
+   "org": "Vodacom",
+   "port": 23,
+   "opts": {}
+  },
+  {
+   "os": null,
+   "timestamp": "2014-01-01T01:28:55.903352",
+   "isp": "Vodacom",
+   "asn": "AS36994",
+   "banner": "SNMP agent for HiPath 3000/5000 V5.x",
+   "hostnames": [],
+   "location": {
+    "city": null,
+    "region_code": null,
+    "area_code": null,
+    "longitude": 24.0,
+    "country_code3": "ZAF",
+    "country_name": "South Africa",
+    "postal_code": null,
+    "dma_code": null,
+    "country_code": "ZA",
+    "latitude": -29.0
+   },
+   "ip": "41.21.249.170",
+   "domains": [],
+   "org": "Vodacom",
+   "port": 161,
+   "opts": {}
+  }
+ ],
+ "city": null,
+ "longitude": 24.0,
+ "country_code3": "ZAF",
+ "latitude": -29.0,
+ "os": null,
+ "ports": [23, 161]
+}
+
+GET/shodan/host/count 
+Search Shodan without Results
+This method behaves identical to "/shodan/host/search" with the only difference that this method does not return any host results, it only returns the total number of results that matched the query and any facet information that was requested. As a result this method does not consume query credits.
+Request URL
+https://api.shodan.io/shodan/host/count?key={YOUR_API_KEY}&query={query}&facets={facets}
+Parameters
+query: [String] Shodan search query. The provided string is used to search the database of banners in Shodan, with the additional option to provide filters inside the search query using a "filter:value" format. For example, the following search query would find Apache webservers located in Germany: "apache country:DE". The following filters are currently supported: 
+after
+Only show results that were collected after the given date (dd/mm/yyyy).
+asn
+The Autonomous System Number that identifies the network the device is on.
+before
+Only show results that were collected before the given date (dd/mm/yyyy.
+city
+Show results that are located in the given city.
+country
+Show results that are located within the given country.
+geo
+There are 2 modes to the geo filter: radius and bounding box. To limit results based on a radius around a pair of latitude/ longitude, provide 3 parameters; ex: geo:50,50,100. If you want to find all results within a bounding box, supply the top left and bottom right coordinates for the region; ex: geo:10,10,50,50.
+hash
+Hash of the "data" property
+has_ipv6
+If "true" only show results that were discovered on IPv6.
+has_screenshot
+If "true" only show results that have a screenshot available.
+hostname
+Search for hosts that contain the given value in their hostname.
+isp
+Find devices based on the upstream owner of the IP netblock.
+link
+Find devices depending on their connection to the Internet.
+net
+Search by netblock using CIDR notation; ex: net:69.84.207.0/24
+org
+Find devices based on the owner of the IP netblock.
+os
+Filter results based on the operating system of the device.
+port
+Find devices based on the services/ ports that are publicly exposed on the Internet.
+postal
+Search by postal code.
+product
+Filter using the name of the software/ product; ex: product:Apache
+state
+Search for devices based on the state/ region they are located in.
+version
+Filter the results to include only products of the given version; ex: product:apache version:1.3.37
+
+bitcoin.ip
+Find Bitcoin servers that had the given IP in their list of peers.
+bitcoin.ip_count
+Find Bitcoin servers that return the given number of IPs in the list of peers.
+bitcoin.port
+Find Bitcoin servers that had IPs with the given port in their list of peers.
+bitcoin.version
+Filter results based on the Bitcoin protocol version.
+
+http.component
+Name of web technology used on the website
+http.component_category
+Category of web components used on the website
+http.html
+Search the HTML of the website for the given value.
+http.html_hash
+Hash of the website HTML
+http.status
+Response status code
+http.title
+Search the title of the website
+
+ntp.ip
+Find NTP servers that had the given IP in their monlist.
+ntp.ip_count
+Find NTP servers that return the given number of IPs in the initial monlist response.
+ntp.more
+Whether or not more IPs were available for the given NTP server.
+ntp.port
+Find NTP servers that had IPs with the given port in their monlist.
+
+ssl
+Search all SSL data
+ssl.alpn
+Application layer protocols such as HTTP/2 ("h2")
+ssl.chain_count
+Number of certificates in the chain
+ssl.version
+Possible values: SSLv2, SSLv3, TLSv1, TLSv1.1, TLSv1.2
+ssl.cert.alg
+Certificate algorithm
+ssl.cert.expired
+Whether the SSL certificate is expired or not; True/ False
+ssl.cert.extension
+Names of extensions in the certificate
+ssl.cert.serial
+Serial number as an integer or hexadecimal string
+ssl.cert.pubkey.bits
+Number of bits in the public key
+ssl.cert.pubkey.type
+Public key type
+ssl.cipher.version
+SSL version of the preferred cipher
+ssl.cipher.bits
+Number of bits in the preferred cipher
+ssl.cipher.name
+Name of the preferred cipher
+
+telnet.option
+Search all the options
+telnet.do
+The server requests the client to support these options
+telnet.dont
+The server requests the client to not support these options
+telnet.will
+The server supports these options
+telnet.wont
+The server doesnt support these options
+facets (optional): [String] A comma-separated list of properties to get summary information on. Property names can also be in the format of "property:count", where "count" is the number of facets that will be returned for a property (i.e. "country:100" to get the top 100 countries for a search query). The following facets are currently supported: 
+asn
+Autonomous system number.
+city
+Name of the city where the device is located.
+country
+2-letter country code where the device is located.
+device
+The type of device (webcam, router, etc.).
+domain
+The primary domain for the hostname of the device; i.e. the hostname without any subdomains.
+geocluster
+Group devices based on their latitude/ longitude into geographic regions/ clusters.
+has_screenshot
+If "true" only includes results that have a screenshot available.
+isp
+The ISP that is providing the organization with the IP space for this device.
+link
+The network link type. Possible values are: "Ethernet or modem", "generic tunnel or VPN", "DSL", "IPIP or SIT", "SLIP", "IPSec or GRE", "VLAN", "jumbo Ethernet", "Google", "GIF", "PPTP", "loopback", "AX.25 radio modem".
+org
+The name of the organization that is assigned the IP space for this device.
+os
+The operating system that powers the device.
+port
+The port number that the service is operating on.
+postal
+The postal code for the location the device is at.
+state
+The state/ region where the device is located.
+timestamp_day
+Provide a breakdown of when the banners were last updated, broken down by days.
+timestamp_month
+Provide a breakdown of when the banners were last updated, broken down by months.
+timestamp_year
+Provide a breakdown of when the banners were last updated, broken down by years.
+uptime
+Returns a histogram of values showing the number of minutes that the devices have been online.
+version
+The version of the product that generated the banner.
+
+bitcoin.ip
+The IPs from the list of peers.
+bitcoin.ip_count
+The number of peers that were returned by the Bitcoin server.
+bitcoin.port
+The port numbers that the peers were using to communicate with the Bitcoin server.
+bitcoin.user_agent
+The user-agent of the software that powers the Bitcoin server.
+bitcoin.version
+The Bitcoin protocol version of the server.
+
+
+http.component
+Name of web technology used on the website
+http.component_category
+Category of web components used on the website
+http.html_hash
+Hash of the website HTML
+http.status
+Response status code
+http.title
+Title of the website
+
+ntp.ip
+The IPs that were returned from running the NTP monlist command.
+ntp.ip_count
+The number of IPs that were returned by the NTP monlist command; values can range from 0 to 6.
+ntp.more
+Boolean value indicating whether or not there were more than 6 IPs available from the server.
+ntp.port
+The port numbers that the IPs in the monlist command used to interact with the NTP server.
+
+ssh.cipher
+The cipher used to encrypt the SSH connection.
+ssh.fingerprint
+The unique fingerprint for the device based on its key.
+ssh.mac
+The hashing method used to calculate the MAC.
+ssh.type
+The key type used for the connection.
+
+ssl.alpn
+Application layer protocols such as HTTP/2 ("h2")
+ssl.chain_count
+Number of certificates in the chain
+ssl.version
+Possible values: SSLv2, SSLv3, TLSv1, TLSv1.1, TLSv1.2
+ssl.cert.alg
+Certificate algorithm
+ssl.cert.expired
+Whether the SSL certificate is expired or not; True/ False
+ssl.extension
+Names of extensions in the certificate
+ssl.cert.fingerprint
+SSL certificate fingerprint
+ssl.cert.serial
+Serial number as an integer or hexadecimal string
+ssl.cert.pubkey.bits
+Number of bits in the public key
+ssl.cert.pubkey.type
+Public key type
+ssl.cipher.version
+SSL version of the preferred cipher
+ssl.cipher.bits
+Number of bits in the preferred cipher
+ssl.cipher.name
+Name of the preferred cipher
+
+telnet.option
+Show all the options
+telnet.do
+The server requests the client to support these options
+telnet.dont
+The server requests the client to not support these options
+telnet.will
+The server supports these options
+telnet.wont
+The server doesnt support these options
+Sample Response
+{
+ "matches": [ ],
+ "facets": {
+  "org": [
+   {
+    "count": 286,
+    "value": "Korea Telecom"
+   },
+   {
+    "count": 229,
+    "value": "Comcast Cable"
+   },
+   {
+    "count": 113,
+    "value": "Taiwan Academic Network"
+   },
+   {
+    "count": 107,
+    "value": "University of Minnesota"
+   },
+   {
+    "count": 104,
+    "value": "Tiawan Academic Network (TANet) Information Center"
+   }
+  ]
+ },
+ "total": 12039
+}
+
+GET/shodan/host/search 
+Search Shodan
+Search Shodan using the same query syntax as the website and use facets to get summary information for different properties.
+Requirements
+This method may use API query credits depending on usage. If any of the following criteria are met, your account will be deducated 1 query credit:
+The search query contains a filter.
+Accessing results past the 1st page using the "page". For every 100 results past the 1st page 1 query credit is deducted.
+Request URL
+https://api.shodan.io/shodan/host/search?key={YOUR_API_KEY}&query={query}&facets={facets}
+Parameters
+query: [String] Shodan search query. The provided string is used to search the database of banners in Shodan, with the additional option to provide filters inside the search query using a "filter:value" format. For example, the following search query would find Apache webservers located in Germany: "apache country:DE". The following filters are currently supported: 
+after
+Only show results that were collected after the given date (dd/mm/yyyy).
+asn
+The Autonomous System Number that identifies the network the device is on.
+before
+Only show results that were collected before the given date (dd/mm/yyyy.
+city
+Show results that are located in the given city.
+country
+Show results that are located within the given country.
+geo
+There are 2 modes to the geo filter: radius and bounding box. To limit results based on a radius around a pair of latitude/ longitude, provide 3 parameters; ex: geo:50,50,100. If you want to find all results within a bounding box, supply the top left and bottom right coordinates for the region; ex: geo:10,10,50,50.
+hash
+Hash of the "data" property
+has_ipv6
+If "true" only show results that were discovered on IPv6.
+has_screenshot
+If "true" only show results that have a screenshot available.
+hostname
+Search for hosts that contain the given value in their hostname.
+isp
+Find devices based on the upstream owner of the IP netblock.
+link
+Find devices depending on their connection to the Internet.
+net
+Search by netblock using CIDR notation; ex: net:69.84.207.0/24
+org
+Find devices based on the owner of the IP netblock.
+os
+Filter results based on the operating system of the device.
+port
+Find devices based on the services/ ports that are publicly exposed on the Internet.
+postal
+Search by postal code.
+product
+Filter using the name of the software/ product; ex: product:Apache
+state
+Search for devices based on the state/ region they are located in.
+version
+Filter the results to include only products of the given version; ex: product:apache version:1.3.37
+
+bitcoin.ip
+Find Bitcoin servers that had the given IP in their list of peers.
+bitcoin.ip_count
+Find Bitcoin servers that return the given number of IPs in the list of peers.
+bitcoin.port
+Find Bitcoin servers that had IPs with the given port in their list of peers.
+bitcoin.version
+Filter results based on the Bitcoin protocol version.
+
+http.component
+Name of web technology used on the website
+http.component_category
+Category of web components used on the website
+http.html
+Search the HTML of the website for the given value.
+http.html_hash
+Hash of the website HTML
+http.status
+Response status code
+http.title
+Search the title of the website
+
+ntp.ip
+Find NTP servers that had the given IP in their monlist.
+ntp.ip_count
+Find NTP servers that return the given number of IPs in the initial monlist response.
+ntp.more
+Whether or not more IPs were available for the given NTP server.
+ntp.port
+Find NTP servers that had IPs with the given port in their monlist.
+
+ssl
+Search all SSL data
+ssl.alpn
+Application layer protocols such as HTTP/2 ("h2")
+ssl.chain_count
+Number of certificates in the chain
+ssl.version
+Possible values: SSLv2, SSLv3, TLSv1, TLSv1.1, TLSv1.2
+ssl.cert.alg
+Certificate algorithm
+ssl.cert.expired
+Whether the SSL certificate is expired or not; True/ False
+ssl.cert.extension
+Names of extensions in the certificate
+ssl.cert.serial
+Serial number as an integer or hexadecimal string
+ssl.cert.pubkey.bits
+Number of bits in the public key
+ssl.cert.pubkey.type
+Public key type
+ssl.cipher.version
+SSL version of the preferred cipher
+ssl.cipher.bits
+Number of bits in the preferred cipher
+ssl.cipher.name
+Name of the preferred cipher
+
+telnet.option
+Search all the options
+telnet.do
+The server requests the client to support these options
+telnet.dont
+The server requests the client to not support these options
+telnet.will
+The server supports these options
+telnet.wont
+The server doesnt support these options
+facets (optional): [String] A comma-separated list of properties to get summary information on. Property names can also be in the format of "property:count", where "count" is the number of facets that will be returned for a property (i.e. "country:100" to get the top 100 countries for a search query). The following facets are currently supported: 
+asn
+Autonomous system number.
+city
+Name of the city where the device is located.
+country
+2-letter country code where the device is located.
+device
+The type of device (webcam, router, etc.).
+domain
+The primary domain for the hostname of the device; i.e. the hostname without any subdomains.
+geocluster
+Group devices based on their latitude/ longitude into geographic regions/ clusters.
+has_screenshot
+If "true" only includes results that have a screenshot available.
+isp
+The ISP that is providing the organization with the IP space for this device.
+link
+The network link type. Possible values are: "Ethernet or modem", "generic tunnel or VPN", "DSL", "IPIP or SIT", "SLIP", "IPSec or GRE", "VLAN", "jumbo Ethernet", "Google", "GIF", "PPTP", "loopback", "AX.25 radio modem".
+org
+The name of the organization that is assigned the IP space for this device.
+os
+The operating system that powers the device.
+port
+The port number that the service is operating on.
+postal
+The postal code for the location the device is at.
+state
+The state/ region where the device is located.
+timestamp_day
+Provide a breakdown of when the banners were last updated, broken down by days.
+timestamp_month
+Provide a breakdown of when the banners were last updated, broken down by months.
+timestamp_year
+Provide a breakdown of when the banners were last updated, broken down by years.
+uptime
+Returns a histogram of values showing the number of minutes that the devices have been online.
+version
+The version of the product that generated the banner.
+
+bitcoin.ip
+The IPs from the list of peers.
+bitcoin.ip_count
+The number of peers that were returned by the Bitcoin server.
+bitcoin.port
+The port numbers that the peers were using to communicate with the Bitcoin server.
+bitcoin.user_agent
+The user-agent of the software that powers the Bitcoin server.
+bitcoin.version
+The Bitcoin protocol version of the server.
+
+
+http.component
+Name of web technology used on the website
+http.component_category
+Category of web components used on the website
+http.html_hash
+Hash of the website HTML
+http.status
+Response status code
+http.title
+Title of the website
+
+ntp.ip
+The IPs that were returned from running the NTP monlist command.
+ntp.ip_count
+The number of IPs that were returned by the NTP monlist command; values can range from 0 to 6.
+ntp.more
+Boolean value indicating whether or not there were more than 6 IPs available from the server.
+ntp.port
+The port numbers that the IPs in the monlist command used to interact with the NTP server.
+
+ssh.cipher
+The cipher used to encrypt the SSH connection.
+ssh.fingerprint
+The unique fingerprint for the device based on its key.
+ssh.mac
+The hashing method used to calculate the MAC.
+ssh.type
+The key type used for the connection.
+
+ssl.alpn
+Application layer protocols such as HTTP/2 ("h2")
+ssl.chain_count
+Number of certificates in the chain
+ssl.version
+Possible values: SSLv2, SSLv3, TLSv1, TLSv1.1, TLSv1.2
+ssl.cert.alg
+Certificate algorithm
+ssl.cert.expired
+Whether the SSL certificate is expired or not; True/ False
+ssl.extension
+Names of extensions in the certificate
+ssl.cert.fingerprint
+SSL certificate fingerprint
+ssl.cert.serial
+Serial number as an integer or hexadecimal string
+ssl.cert.pubkey.bits
+Number of bits in the public key
+ssl.cert.pubkey.type
+Public key type
+ssl.cipher.version
+SSL version of the preferred cipher
+ssl.cipher.bits
+Number of bits in the preferred cipher
+ssl.cipher.name
+Name of the preferred cipher
+
+telnet.option
+Show all the options
+telnet.do
+The server requests the client to support these options
+telnet.dont
+The server requests the client to not support these options
+telnet.will
+The server supports these options
+telnet.wont
+The server doesnt support these options
+page (optional): [Integer] The page number to page through results 100 at a time (default: 1) 
+minify (optional): [Boolean] True or False; whether or not to truncate some of the larger fields (default: True) 
+Sample Response
+{
+ "matches": [
+  {
+   "os": null,
+   "timestamp": "2014-01-15T05:49:56.283713",
+   "isp": "Vivacom",
+   "asn": "AS8866",
+   "hostnames": [ ],
+   "location": {
+    "city": null,
+    "region_code": null,
+    "area_code": null,
+    "longitude": 25,
+    "country_code3": "BGR",
+    "country_name": "Bulgaria",
+    "postal_code": null,
+    "dma_code": null,
+    "country_code": "BG",
+    "latitude": 43
+   },
+   "ip": 3579573318,
+   "domains": [ ],
+   "org": "Vivacom",
+   "data": "@PJL INFO STATUS CODE=35078 DISPLAY="Power Saver" ONLINE=TRUE 
+",
+   "port": 9100,
+   "ip_str": "213.91.244.70"
+  },
+  ...
+ ],
+ "facets": {
+  "org": [
+   {
+    "count": 286,
+    "value": "Korea Telecom"
+   },
+   {
+    "count": 229,
+    "value": "Comcast Cable"
+   },
+   {
+    "count": 113,
+    "value": "Taiwan Academic Network"
+   },
+   {
+    "count": 107,
+    "value": "University of Minnesota"
+   },
+   {
+    "count": 104,
+    "value": "Tiawan Academic Network (TANet) Information Center"
+   }
+  ]
+ },
+ "total": 12039
+}
+GET/shodan/host/search/facets 
+List all search facets
+This method returns a list of facets that can be used to get a breakdown of the top values for a property.
+Request URL
+https://api.shodan.io/shodan/host/search/facets?key={YOUR_API_KEY}
+Sample Response
+[
+ 'asn',
+ 'bitcoin.ip',
+ 'bitcoin.ip_count',
+ ...
+]
+GET/shodan/host/search/filters 
+List all filters that can be used when searching
+This method returns a list of search filters that can be used in the search query.
+Request URL
+https://api.shodan.io/shodan/host/search/filters?key={YOUR_API_KEY}
+Sample Response
+[
+ 'all',
+ 'asn',
+ 'bitcoin.ip',
+ ...
+]
+
+GET/shodan/host/search/tokens 
+Break the search query into tokens
+This method lets you determine which filters are being used by the query string and what parameters were provided to the filters.
+Request URL
+https://api.shodan.io/shodan/host/search/tokens?key={YOUR_API_KEY}&query={query}
+Parameters
+query: [String] Shodan search query. The provided string is used to search the database of banners in Shodan, with the additional option to provide filters inside the search query using a "filter:value" format. For example, the following search query would find Apache webservers located in Germany: "apache country:DE". The following filters are currently supported: 
+after
+Only show results that were collected after the given date (dd/mm/yyyy).
+asn
+The Autonomous System Number that identifies the network the device is on.
+before
+Only show results that were collected before the given date (dd/mm/yyyy.
+city
+Show results that are located in the given city.
+country
+Show results that are located within the given country.
+geo
+There are 2 modes to the geo filter: radius and bounding box. To limit results based on a radius around a pair of latitude/ longitude, provide 3 parameters; ex: geo:50,50,100. If you want to find all results within a bounding box, supply the top left and bottom right coordinates for the region; ex: geo:10,10,50,50.
+hash
+Hash of the "data" property
+has_ipv6
+If "true" only show results that were discovered on IPv6.
+has_screenshot
+If "true" only show results that have a screenshot available.
+hostname
+Search for hosts that contain the given value in their hostname.
+isp
+Find devices based on the upstream owner of the IP netblock.
+link
+Find devices depending on their connection to the Internet.
+net
+Search by netblock using CIDR notation; ex: net:69.84.207.0/24
+org
+Find devices based on the owner of the IP netblock.
+os
+Filter results based on the operating system of the device.
+port
+Find devices based on the services/ ports that are publicly exposed on the Internet.
+postal
+Search by postal code.
+product
+Filter using the name of the software/ product; ex: product:Apache
+state
+Search for devices based on the state/ region they are located in.
+version
+Filter the results to include only products of the given version; ex: product:apache version:1.3.37
+
+bitcoin.ip
+Find Bitcoin servers that had the given IP in their list of peers.
+bitcoin.ip_count
+Find Bitcoin servers that return the given number of IPs in the list of peers.
+bitcoin.port
+Find Bitcoin servers that had IPs with the given port in their list of peers.
+bitcoin.version
+Filter results based on the Bitcoin protocol version.
+
+http.component
+Name of web technology used on the website
+http.component_category
+Category of web components used on the website
+http.html
+Search the HTML of the website for the given value.
+http.html_hash
+Hash of the website HTML
+http.status
+Response status code
+http.title
+Search the title of the website
+
+ntp.ip
+Find NTP servers that had the given IP in their monlist.
+ntp.ip_count
+Find NTP servers that return the given number of IPs in the initial monlist response.
+ntp.more
+Whether or not more IPs were available for the given NTP server.
+ntp.port
+Find NTP servers that had IPs with the given port in their monlist.
+
+ssl
+Search all SSL data
+ssl.alpn
+Application layer protocols such as HTTP/2 ("h2")
+ssl.chain_count
+Number of certificates in the chain
+ssl.version
+Possible values: SSLv2, SSLv3, TLSv1, TLSv1.1, TLSv1.2
+ssl.cert.alg
+Certificate algorithm
+ssl.cert.expired
+Whether the SSL certificate is expired or not; True/ False
+ssl.cert.extension
+Names of extensions in the certificate
+ssl.cert.serial
+Serial number as an integer or hexadecimal string
+ssl.cert.pubkey.bits
+Number of bits in the public key
+ssl.cert.pubkey.type
+Public key type
+ssl.cipher.version
+SSL version of the preferred cipher
+ssl.cipher.bits
+Number of bits in the preferred cipher
+ssl.cipher.name
+Name of the preferred cipher
+
+telnet.option
+Search all the options
+telnet.do
+The server requests the client to support these options
+telnet.dont
+The server requests the client to not support these options
+telnet.will
+The server supports these options
+telnet.wont
+The server doesnt support these options
+Sample Response
+{
+ "attributes": {
+  "ports": [
+   22
+  ]
+ },
+ "errors": [ ],
+ "string": "dropbear*",
+ "filters": [
+  "port"
+ ]
+}
+GET/shodan/ports 
+List all ports that Shodan is crawling on the Internet.
+This method returns a list of port numbers that the crawlers are looking for.
+Request URL
+https://api.shodan.io/shodan/ports?key={YOUR_API_KEY}
+Sample Response
+[
+ 7,
+ 11,
+ 13,
+ 15,
+ ...
+]
+
+
+Shodan On-Demand Scanning
+GET/shodan/protocols 
+List all protocols that can be used when performing on-demand Internet scans via Shodan.
+This method returns an object containing all the protocols that can be used when launching an Internet scan.
+Request URL
+https://api.shodan.io/shodan/protocols?key={YOUR_API_KEY}
+Sample Response
+{
+ "riak": "Sends a ServerInfo request to Riak",
+ "ethernetip-udp": "A dump of data from a DNP3 outstation",
+ "kerberos": "Checks whether a device is running the Kerberos authentication daemon.",
+ "http": "HTTP banner grabbing module",
+ "mongodb": "Collects system information from the MongoDB daemon.",
+ "pcanywhere-status": "Asks the PC Anywhere status daemon for basic information.",
+ "telnet": "Telnet banner grabbing module",
+ "nodata-tcp": "Connect to a server without sending any data and store whatever it returns.",
+ "pcworx": "Gets information about the Omron PLC.",
+ "modbus": "Grab the Modbus device information via functions 17 and 43."
+}
+
+POST/shodan/scan 
+Request Shodan to crawl an IP/ netblock
+Use this method to request Shodan to crawl a network.
+Requirements
+This method uses API scan credits: 1 IP consumes 1 scan credit. You must have a paid API plan (either one-time payment or subscription) in order to use this method.
+Request URL
+https://api.shodan.io/shodan/scan?key={YOUR_API_KEY}
+Parameters
+ips:[String] A comma-separated list of IPs or netblocks (in CIDR notation) that should get crawled. 
+Sample Response
+{
+ 'id': 'R2XRT5HH6X67PFAB',
+ 'count': 1,
+ 'credits_left': 5119
+}
+
+POST/shodan/scan/internet 
+Crawl the Internet for a specific port and protocol using Shodan
+Use this method to request Shodan to crawl the Internet for a specific port.
+Requirements
+This method is restricted to security researchers and companies with a Shodan Enterprise Data license. To apply for access to this method as a researcher, please email jmath@shodan.io with information about your project. Access is restricted to prevent abuse.
+Request URL
+https://api.shodan.io/shodan/scan/internet?key={YOUR_API_KEY}
+Parameters
+port:[Integer] The port that Shodan should crawl the Internet for. 
+protocol:[String] The name of the protocol that should be used to interrogate the port. See /shodan/protocols for a list of supported protocols. 
+Sample Response
+{
+ 'id': 'R2XRT5HH6X67PFAB',
+}
+
+GET/shodan/scan/{id} 
+Get the status of a scan request
+Check the progress of a previously submitted scan request. Possible values for the status are:
+SUBMITTING
+QUEUE
+PROCESSING
+DONE
+Request URL
+https://api.shodan.io/shodan/scan/{id}?key={YOUR_API_KEY}
+Parameters
+id:[String] The unique scan ID that was returned by /shodan/scan. 
+Sample Response
+{
+ 'id': 'R2XRT5HH6X67PFAB',
+ 'count': 1,
+ 'status': 'PROCESSING'
+}
+
+
+Shodan Network Alerts
+POST/shodan/alert 
+Create an alert to monitor a network range
+Use this method to create a network alert for a defined IP/ netblock which can be used to subscribe to changes/ events that are discovered within that range.
+Parameters
+The alert is created by sending a JSON encoded object that has the structure:
+{
+ 'name': {name},
+ 'filters': {
+  'ip': {ip},
+ },
+ 'expires': {expires},
+}
+name: [String] The name to describe the network alert. 
+filters: [Object] An object specifying the criteria that an alert should trigger. The only supported option at the moment is the "ip" filter. 
+filters.ip: [String] A list of IPs or network ranges defined using CIDR notation. 
+expires (optional): [Integer] Number of seconds that the alert should be active. 
+Here is a sample alert request object:
+{
+ 'name': 'Test Alert',
+ 'filters': {
+  'ip': [
+   '198.20.88.0/24'
+  ]
+ }
+}
+GET/shodan/alert/{id}/info 
+Get the details for a network alert
+Returns the information about a specific network alert.
+Request URL
+https://api.shodan.io/shodan/alert/HKVGCP1WD79Z7W2T/info?key={YOUR_API_KEY}
+Parameters
+id: [String] Alert ID 
+Sample Response
+{
+ "name": "Test Alert",
+ "created": "2017-01-09T21:53:17.104000",
+ "expires": 0,
+ "expiration": null,
+ "filters": {
+  "ip": [
+   "198.20.88.870"
+  ]
+ },
+ "id": "HKVGCP1WD79Z7W2T",
+ "size": 1
+
+}
+DELETE/shodan/alert/{id} 
+Delete an alert
+Remove the specified network alert.
+Request URL
+https://api.shodan.io/shodan/alert/{id}?key={YOUR_API_KEY}
+Parameters
+id: [String] Alert ID 
+Sample Response
+{}
+GET/shodan/alert/info 
+Get a list of all the created alerts
+Returns a listing of all the network alerts that are currently active on the account.
+Request URL
+https://api.shodan.io/shodan/alert/info?key={YOUR_API_KEY}
+Sample Response
+[
+ {
+  "name": "Test Alert",
+  "created": "2017-01-09T21:53:17.104000",
+  "expires": 0,
+  "expiration": null,
+  "filters": {
+   "ip": [
+    "198.20.88.870"
+   ]
+  },
+  "id": "HKVGCP1WD79Z7W2T",
+  "size": 1
+ }
+]
+GET/shodan/alert/{id}/notifier/{notifier_id} 
+Add the notifier to the alert
+Add the specified notifier to the network alert. Notifications are only sent if triggers have also been enabled.
+Parameters
+id: [String] Alert ID 
+notifier_id: [String] Notifier ID 
+DELETE/shodan/alert/{id}/notifier/{notifier_id} 
+Remove the notifier from the alert
+Remove the notification service from the alert. Notifications are only sent if triggers have also been enabled.
+Parameters
+id: [String] Alert ID 
+notifier_id: [String] Notifier ID 
+GET/shodan/alert/triggers 
+Get a list of available triggers
+Returns a list of all the triggers that can be enabled on network alerts.
+Request URL
+https://api.shodan.io/shodan/alert/triggers?key={YOUR_API_KEY}
+Sample Response
+[
+ {
+  "name": "any",
+  "rule": "*",
+  "description": "Match any service that is discovered"
+ },
+ {
+  "name": "industrial_control_system",
+  "rule": "tag:ics",
+  "description": "Services associated with industrial control systems"
+ }
+]
+PUT/shodan/alert/{id}/trigger/{trigger} 
+Enable a trigger
+Get notifications when the specified trigger is met.
+Request URL
+https://api.shodan.io/shodan/alert/{id}/trigger/{trigger}?key={YOUR_API_KEY}
+Parameters
+id: [String] Alert ID 
+trigger: [String] Trigger name 
+Sample Response
+{
+ 'success': true
+}
+DELETE/shodan/alert/{id}/trigger/{trigger} 
+Disable a trigger
+Stop getting notifications for the specified trigger.
+Request URL
+https://api.shodan.io/shodan/alert/{id}/trigger/{trigger}?key={YOUR_API_KEY}
+Parameters
+id: [String] Alert ID 
+trigger: [String] Trigger name 
+Sample Response
+{
+ 'success': true
+}
+PUT/shodan/alert/{id}/trigger/{trigger}/ignore/{service} 
+Add to Whitelist
+Ignore the specified service when it is matched for the trigger.
+Request URL
+https://api.shodan.io/shodan/alert/{id}/trigger/{trigger}/ignore/{service}?key={YOUR_API_KEY}
+Parameters
+id: [String] Alert ID 
+trigger: [String] Trigger name 
+service: [String] Service specified in the format "ip:port" (ex. "1.1.1.1:80") 
+Sample Response
+{
+ 'success': true
+}
+DELETE/shodan/alert/{id}/trigger/{trigger}/ignore/{service} 
+Remove from Whitelist
+Start getting notifications again for the specified trigger.
+Request URL
+https://api.shodan.io/shodan/alert/{id}/trigger/{trigger}/ignore/{service}?key={YOUR_API_KEY}
+Parameters
+id: [String] Alert ID 
+trigger: [String] Trigger name 
+service: [String] Service specified in the format "ip:port" (ex. "1.1.1.1:80") 
+Sample Response
+{
+ 'success': true
+}
+
+
+Notifiers
+GET/notifier 
+List all user-created notifiers
+Get a list of all the notifiers that the user has created.
+POST/notifier 
+Create a new notification service for the user
+Use this method to create a new notification service endpoint that Shodan services can send notifications through.
+Parameters
+The parameters depend on the type of notification service that is being created. To get a list of parameters for a provider us the /notifier/provider endpoint.
+GET/notifier/provider 
+List of available notification providers
+Get a list of all the notification providers that are available and the parameters to submit when creating them.
+Sample Response
+{
+ pagerduty: {
+  required: [
+   "routing_key"
+  ]
+ },
+ slack: {
+  required: [
+   "webhook_url"
+  ]
+ },
+ telegram: {
+  required: [
+   "chat_id",
+   "token"
+  ]
+ },
+ webhook: {
+  required: [
+   "url"
+  ]
+ },
+ phone: {
+  required: [
+   "to"
+  ]
+ },
+ email: {
+  required: [
+   "to"
+  ]
+ },
+ gitter: {
+  required: [
+   "room_id",
+   "token"
+  ]
+ }
+}
+DELETE/notifier/{id} 
+Delete a notification service
+Remove the notification service created for the user.
+Parameters
+id: [String] Notifier ID 
+GET/notifier/{id} 
+Get information about a notifier
+Use this method to create a new notification service endpoint that Shodan services can send notifications through.
+Parameters
+id: [String] Notifier ID 
+PUT/notifier/{id} 
+Edit a notifier
+Use this method to update the parameters of a notifier.
+Parameters
+The parameters depend on the type of notification service that is being created. To get a list of parameters for a provider us the /notifier/provider endpoint.
+
+
+Shodan Directory Methods
+GET/shodan/query 
+List the saved search queries
+Use this method to obtain a list of search queries that users have saved in Shodan.
+Request URL
+https://api.shodan.io/shodan/query?key={YOUR_API_KEY}
+Parameters
+page (optional): [Integer] Page number to iterate over results; each page contains 10 items 
+sort (optional): [String] Sort the list based on a property. Possible values are: votes, timestamp 
+order (optional): [String] Whether to sort the list in ascending or descending order. Possible values are: asc, desc 
+Sample Response
+{
+ 'total': 1400,
+ 'matches': [
+  {
+   "votes": 3700,
+   "description": "best ip cam search I have found yet.",
+   "title": "Webcam",
+   "timestamp": "2010-03-15T13:32:32",
+   "tags": [
+    "webcam",
+    "surveillance",
+    "cams"
+   ],
+   "query": "Server: SQ-WEBCAM"
+  },
+  ...
+ ]
+}
+
+GET/shodan/query/search 
+Search the directory of saved search queries.
+Use this method to search the directory of search queries that users have saved in Shodan.
+Request URL
+https://api.shodan.io/shodan/query/search?key={YOUR_API_KEY}
+Parameters
+query: [String] What to search for in the directory of saved search queries. 
+page (optional): [Integer] Page number to iterate over results; each page contains 10 items 
+Sample Response
+{
+ 'total': 1400,
+ 'matches': [
+  {
+   "votes": 3700,
+   "description": "best ip cam search I have found yet.",
+   "title": "Webcam",
+   "timestamp": "2010-03-15T13:32:32",
+   "tags": [
+    "webcam",
+    "surveillance",
+    "cams"
+   ],
+   "query": "Server: SQ-WEBCAM"
+  },
+  ...
+ ]
+}
+
+GET/shodan/query/tags 
+List the most popular tags
+Use this method to obtain a list of popular tags for the saved search queries in Shodan.
+Request URL
+https://api.shodan.io/shodan/query/tags?key={YOUR_API_KEY}
+Parameters
+size (optional): [Integer] The number of tags to return (default: 10). 
+Sample Response
+{
+ 'total': 1400,
+ 'matches': [
+  {
+   "value": "webcam",
+   "count": 69
+  },
+  ...
+ ]
+}
+
+
+Shodan Bulk DataEnterprise
+GET/shodan/data 
+Get a list of available datasets
+Use this method to see a list of the datasets that are available for download.
+Request URL
+https://api.shodan.io/shodan/data?key={YOUR_API_KEY}
+Sample Response
+[
+ {
+  'name': 'raw-daily',
+  'scope': 'daily',
+  'description': 'Data files containing all the information collected during a day'
+ }
+]
+GET/shodan/data/{dataset} 
+List the files for a dataset
+Get a list of files that are available for download from the provided dataset.
+Parameters
+dataset: [String] Name of the dataset 
+Request URL
+https://api.shodan.io/shodan/data/raw-daily?key={YOUR_API_KEY}
+Sample Response
+[
+ {
+  'url': 'https://...',
+  'timestamp': 1514669280000,
+  'name': '2017-12-29.json.gz',
+  'size': 103750058939,
+ },
+ ...
+]
+
+
+Manage OrganizationEnterprise
+GET/org 
+General Information
+Get information about your organization such as the list of its members, upgrades, authorized domains and more.
+Request URL
+https://api.shodan.io/org?key={YOUR_API_KEY}
+Sample Response
+{
+ 'id': 'OIj8DS0lks9',
+ 'name': 'ACME',
+ 'created': '2018-05-20T01:35:20.604000',
+ 'admins': [
+  'username': 'acme-admin',
+  'email': 'admin@acme.com'
+ ],
+ 'members': [],
+ 'upgrade_type': 'dev',
+ 'domains': [
+  'acme.com'
+ ],
+ 'logo': null
+}
+PUT/org/member/{user} 
+Add a new member
+Add a Shodan user to the organization and upgrade them.
+Request URL
+https://api.shodan.io/org/member/{user}?key={YOUR_API_KEY}
+Parameters
+user: [String] Username or email of the Shodan user 
+notify (optional): [Bool] Whether or not to send an email notification 
+Sample Response
+{
+ 'success': true
+}
+DELETE/org/member/{user} 
+Remove a member
+Remove and downgrade the provided member from the organization.
+Request URL
+https://api.shodan.io/org/member/{user}?key={YOUR_API_KEY}
+Parameters
+user: [String] Username or email of the Shodan user 
+Sample Response
+{
+ 'success': true
+}
+
+
+Account Methods
+GET/account/profile 
+Account Profile
+Returns information about the Shodan account linked to this API key.
+Request URL
+https://api.shodan.io/account/profile?key={YOUR_API_KEY}
+Sample Response
+{
+ "member": true,
+ "credits": 42,
+ "display_name": null,
+ "created": "2014-04-15T07:34:40"
+}
+
+
+DNS Methods
+GET/dns/domain/{domain} 
+Domain Information
+Get all the subdomains and other DNS entries for the given domain. Uses 1 query credit per lookup.
+Request URL
+https://api.shodan.io/dns/domain/{domain}?key={YOUR_API_KEY}
+Parameters
+domain: [String] Domain name to lookup; example "cnn.com" 
+Sample Response
+{
+ "domain": "cnn.com",
+ "tags": ["ipv6", "spf"],
+ "data": [
+  {
+   "subdomain": "",
+   "type": "NS",
+   "value": "ns-47.awsdns-05.com",
+   "last_seen": "2019-06-22T18:48:21.302051+00:00"
+  },
+  {
+   "subdomain": "",
+   "type": "A",
+   "value": "151.101.129.67",
+   "last_seen": "2019-06-29T17:47:30.649004+00:00"
+  },
+  ...
+ ]
+}
+GET/dns/resolve 
+DNS Lookup
+Look up the IP address for the provided list of hostnames.
+Request URL
+https://api.shodan.io/dns/resolve?hostnames={hostnames}&key={YOUR_API_KEY}
+Parameters
+hostnames: [String] Comma-separated list of hostnames; example "google.com,bing.com" 
+Sample Response
+{
+ "google.com": "74.125.227.230",
+ "bing.com": "204.79.197.200"
+}
+GET/dns/reverse 
+Reverse DNS Lookup
+Look up the hostnames that have been defined for the given list of IP addresses.
+Request URL
+https://api.shodan.io/dns/reverse?ips={ips}&key={YOUR_API_KEY}
+Parameters
+ips: [String] Comma-separated list of IP addresses; example "74.125.227.230,204.79.197.200" 
+Sample Response
+{
+ "74.125.227.230": [
+  "dfw06s38-in-f6.1e100.net"
+ ],
+ "204.79.197.200": [
+  "any.edge.bing.com"
+ ]
+}
+
+
+Utility Methods
+GET/tools/httpheaders 
+HTTP Headers
+Shows the HTTP headers that your client sends when connecting to a webserver.
+Request URL
+https://api.shodan.io/tools/httpheaders?key={YOUR_API_KEY}
+Sample Response
+{
+ "Content-Length": "",
+ "Accept-Language": "en-US,en;q=0.5",
+ "Accept-Encoding": "gzip, deflate, br",
+ "Connection": "keep-alive",
+ "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+ "User-Agent": "Mozilla/6.0",
+ "Host": "api.shodan.io",
+ "Content-Type": ""
+}
+GET/tools/myip 
+My IP Address
+Get your current IP address as seen from the Internet.
+Request URL
+https://api.shodan.io/tools/myip?key={YOUR_API_KEY}
+Sample Response
+"74.125.227.230"
+
+
+API Status Methods
+GET/api-info 
+API Plan Information
+Returns information about the API plan belonging to the given API key.
+Request URL
+https://api.shodan.io/api-info?key={YOUR_API_KEY}
+Sample Response
+{
+ "query_credits": 56,
+ "scan_credits": 0,
+ "telnet": true,
+ "plan": "edu",
+ "https": true,
+ "unlocked": true,
+}
+
+
+Experimental Methods
+GET/labs/honeyscore/{ip} 
+Honeyscore
+Calculates a honeypot probability score ranging from 0 (not a honeypot) to 1.0 (is a honeypot).
+Request URL
+https://api.shodan.io/labs/honeyscore/{ip}?key={YOUR_API_KEY}
+Parameters
+ip: [String] Host IP address 
+Sample Response
+1.0
+
+
+Error Handling
+A non-200 status code in the response indicates an error occurred. Along with a non-200 error code, the error response will also include a message containing the reason for the failure.
+Sample Response
+{
+ "error": "Invalid IP"
+}
+
+
+Next: Streaming API Documentation 
+Shodan ® 2013-2019, All Rights Reserved
