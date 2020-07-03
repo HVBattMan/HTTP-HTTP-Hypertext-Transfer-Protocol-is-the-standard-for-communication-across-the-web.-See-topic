@@ -3295,7 +3295,23 @@ Doesn’t this discourage rapid development and fast iteration?
 Major version zero is all about rapid development. If you’re changing the API every day you should either still be in version 0.y.z or on a separate development branch working on the next major version.
 
 If even the tiniest backwards incompatible changes to the public API require a major version bump, won’t I end up at version 42.0.0 very rapidly?
-This is a question of responsible development and foresight. Incompatible changes should not be introduced lightly to software that has a lot of dependent code. The cost that must be incurred to upgrade can be significant. Having to bump major versions to release incompatible changes means you’ll think through the impact of your changes, and evaluate the cost/benefit ratio involved.
+You need to install Java2 sdk, and setup JAVA_HOME enviromental varible except for OS X. I assume that OS X's JAVA_HOME is reported by calling /usr/libexec/java_home.
+This done please proceed with:
+ruby setup.rb config
+ruby setup.rb setup
+# (in Unix)
+sudo ruby setup.rb install
+or
+# (in win32)
+ruby setup.rb install
+How to test
+On Windows based machines:
+cd test
+ruby test.rb
+On Unix based machines plese see test/readme.unix. You need to set LD_LIBRARY_PATH environmental variable to run rjb.
+Notice for opening non-ASCII 7bit filename
+If you'll plan to open the non-ascii character named file by Java class through Rjb, it may require to set LC_ALL environment variable in you sciprt.
+For example in Rails, set above line in production.rb as your environment:This is a question of responsible development and foresight. Incompatible changes should not be introduced lightly to software that has a lot of dependent code. The cost that must be incurred to upgrade can be significant. Having to bump major versions to release incompatible changes means you’ll think through the impact of your changes, and evaluate the cost/benefit ratio involved.
 
 Documenting the entire public API is too much work!
 It is your responsibility as a professional developer to properly document software that is intended for use by others. Managing software complexity is a hugely important part of keeping a project efficient, and that’s hard to do if nobody knows how to use your software, or what methods are safe to call. In the long run, Semantic Versioning, and the insistence on a well defined public API can keep everyone and everything running smoothly.
